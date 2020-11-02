@@ -1,0 +1,17 @@
+{
+  "name": "vacation-planner",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "debug": "nodemon start index.js"
+  },
+  "author": " <Bo Carey>",
+  "license": "MIT",
+  "devDependencies": {
+    "nodemon": "^2.0.6"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
