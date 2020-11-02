@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "debug": "nodemon start index.js"
   },
   "author": " <Bo Carey>",
