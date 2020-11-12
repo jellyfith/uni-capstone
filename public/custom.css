@@ -1,0 +1,36 @@
+:root {
+    font-size: 12px;
+}
+html,body {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+}
+@media (min-width: 375px) and (max-width: 992px){
+    :root { 
+        font-size: calc( 12px + (20 - 12) * ( (100vw - 375px) / ( 992 - 375) ));
+    }
+}
+@media (min-width: 992px){
+    :root {
+        font-size: 20px;
+    }
+}
+.wrapper {
+    position: relative;
+    display: flex;
+    flex-flow: column;
+    height: 100%;
+    width: 100%;
+}
+.base-event {
+    margin: 2rem auto 1rem;
+    max-width: 90%;
+    width: 75rem;
+    min-height: 10rem;
+    background-color: grey;
+    border-radius: 0.25rem;
+}
+.base-event-header {
+    height: 100%
+}
