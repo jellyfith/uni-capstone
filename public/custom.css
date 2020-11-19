@@ -23,14 +23,51 @@ html,body {
     height: 100%;
     width: 100%;
 }
+
+.event-container {
+    padding-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
 .base-event {
     margin: 2rem auto 1rem;
-    max-width: 90%;
-    width: 75rem;
-    /* min-height: 10rem; */
-    background-color: grey;
-    border-radius: 0.25rem;
+    width: 50rem; 
+    max-width: 75%;
 }
+
 .base-event-header {
     height: 100%;
+}
+
+#add-new-btn {
+    margin: 0 auto;
+}
+
+.card-body * {
+    margin-bottom: 0.75rem;
+}
+
+.button-container {
+    margin: 0;
+    display: flex;
+    flex-direction: row;
+}
+
+.button-container button {
+    margin: 0;
+}
+
+.color-green {
+    color: #32bea7;
+}
+
+.btn-green {
+    color: white;
+    background-color: #32BEA7;
+}
+.btn-green:hover {
+    color: white;
+    background-color: #21AA93;
 }
