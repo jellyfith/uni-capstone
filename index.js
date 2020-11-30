@@ -8,4 +8,4 @@ server.use("/api", apiRoute);
 
 server.use((req, res) => res.sendFile(__dirname + "/public/index.html"));
 
-server.listen(process.env.PORT || 5000);
+server.listen(process.env.PORT || 8080);
