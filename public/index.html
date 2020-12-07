@@ -28,70 +28,18 @@
             <a href="?plan=1">Example</a>
         </nav>
         <div id="event-container" class="container-fluid">
-            <h1 id="plan-title" class="text-center"></h1>
+            <h1 id="plan-title-display" class="text-center"></h1>
+            <input id="plan-title-input" type="text" class="form-control" placeholder="Plan Title" hidden>
         </div>
         <div id="add-new-container" class="container-fluid">
-            <button class="btn bg-light text-left base-event" id="add-new-btn" onclick="addNewEvent()" disabled>
+            <button class="btn bg-light text-left" style="width: 50rem; max-width: 75%;" id="add-new-btn" onclick="addNewEvent()">
                 <i class="fas fa-plus-square color-green" style="vertical-align: middle; font-size: 3rem;"></i>
                 <span style="font-size: 1.25rem; vertical-align:middle; padding-left: 0.75rem;">Add New Event</span>
             </button>
         </div>
-    </div>
-
-    <!-- Components -->
-    <div class="d-none">
-        <plan-title>
-
-        </plan-title>
-        <event-template>
-            <div class="card base-event" id="event-id">
-                <div class="card-header">
-                    <input type="text" class="form-control event-name-input" placeholder="Event Name" hidden>
-                    <span class="event-name">Event Name</span>
-                    <button class="btn btn-green edit-event-button" onclick="editEvent()">Edit</button>
-                </div>
-                <div class="card-body">
-                    <textarea class="form-control notes-input" rows="3" placeholder="Notes" hidden></textarea>
-                    <span class="notes-display">Notes</span>
-                    <input type="text" class="form-control activity-input" placeholder="Activity" hidden>
-                    <span class="activity-display">Activity</span>
-                    <div class="button-container" hidden>
-                        <button class="btn btn-secondary mr-2" onclick="addSubEvent()">Add SubEvent</button>
-                        <!-- <button class="btn btn-secondary" onclick="addNotes()">Add Notes</button> -->
-                        <button class="btn btn-green" style="position: absolute; right: 1.25rem;" onclick="saveEvent()">Save</button>
-                    </div>
-                </div>
-            </div>
-        </event-template>
-        <subevent>
-            <input type="text" class="form-control" placeholder="SubEvent">
-        </subevent>
-        <notes>
-            <textarea class="form-control" rows="3" placeholder="Notes"></textarea>
-        </notes>
-        <button-container>
-            <div class="button-container">
-                <button class="btn btn-secondary mr-2" onclick="addSubEvent()">Add SubEvent</button>
-                <button class="btn btn-secondary" onclick="addNotes()">Add Notes</button>
-                <button class="btn btn-green" style="position: absolute; right: 1.25rem;" onclick="saveEvent()">Save</button>
-            </div>
-        </button-container>
-
-
-        <div class="card" id="event-id">
-            <div class="card-header">
-                <input type="text" class="form-control event-name-input" placeholder="Event Name" hidden>
-                <span class="event-name">Event Name</span>
-                <button class="btn btn-green edit-event-button" onclick="editEvent()">Edit</button>
-            </div>
-            <div class="card-body">
-                <textarea class="form-control notes-input" rows="3" placeholder="Notes" hidden></textarea>
-                <span class="notes-display">Notes</span>
-            </div>
-        </div>
-
-
-
+        <button class="btn btn-green save-button" onclick="savePlan()" hidden>Save</button>
+        <button class="btn btn-green edit-button" onclick="editPlan()" hidden>Edit</button>
+        <button class="btn btn-secondary cancel-button" onclick="cancelEdit()" hidden>Cancel</button>
     </div>
 </body>
 </html>

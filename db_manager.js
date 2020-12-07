@@ -156,35 +156,71 @@ class Database {
     });
   }
 
-  // Event functions
-
-  setEvent(params) {
+  savePlan(params) {
+    console.dir("savePlan");
+    return new Promise(async (resolve, reject) => {
+      let newPlan = {
+        plan_id: params.plan_id,
+        plan_name: params.plan_name,
+        events: ""
+      }
+      let temp = [];
+      if (params.events && params.events.length) {
+        for (let i = 0; i < params.events.length; i++) {
+          const event = params.events[i];
+          let e_data = await this.saveEvent(event);
+          console.dir("saveEvent resolved");
+          temp.push(e_data.event_id);
+        }
+        newPlan.events = temp.join(",");
+      }
+      console.dir("inserting plan");
+      this.DB.all(`INSERT OR REPLACE INTO plans (plan_id, plan_name, events) VALUES (${newPlan.plan_id || "NULL"},"${newPlan.plan_name}","${newPlan.events}")`, async (err) => {
+        this.DB.get(`SELECT * FROM plans WHERE plan_id = ${newPlan.plan_id || "(SELECT MAX(plan_id) FROM plans)"}`, (err, p_data) => {
+          this.getPlan(p_data).then((full) => resolve(full));
+        });
+      });
+    });
+  }
+  saveEvent(params) {
+    console.dir("saveEvent");
+    return new Promise(async (resolve, reject) => {
+      let newEvent = {
+        event_id: params.event_id,
+        event_title: params.event_title,
+        activities: "",
+        notes: params.notes
+      }
+      let temp = [];
+      if (params.activities && params.activities.length > 0) {
+        for (let i = 0; i < params.activities.length; i++) {
+          const activity = params.activities[i];
+          let a_data = await this.saveActivity(activity);
+          console.dir("saveActivity resolved");
+          temp.push(a_data.activity_id);
+        }
+        newEvent.activities = temp.join(',');
+      }
+      console.dir("inserting event");
+      this.DB.all(`INSERT OR REPLACE INTO events (event_id, event_title, activities, notes) VALUES (${newEvent.event_id || "NULL"},"${newEvent.event_title}","${newEvent.activities}","${newEvent.notes}")`, async (err) => {
+        this.DB.get(`SELECT * FROM events WHERE event_id = ${newEvent.event_id || "(SELECT MAX(event_id) FROM events)"}`, (err, e_data) => {
+          resolve(e_data);
+        });
+      });
+    });
+  }
+  saveActivity(params) {
+    console.dir("saveActivity");
     return new Promise((resolve, reject) => {
-      if (params == null || params.event_title == null || !params.event_title.length) return reject("invalid parameters");
-
-      const event_id = params.event_id;
-      const event_title = params.event_title || "";
-      const event_text = params.event_text || "";
-      const event_subevent_ids = params.event_subevent_ids || "";
-
-      resolve();
+      console.dir("inserting activity");
+      this.DB.all(`INSERT OR REPLACE INTO activities (activity_id, activity_content, notes) VALUES (${params.activity_id || "NULL"},"${params.activity_content}","${params.notes}")`, async (err) => {
+        this.DB.get(`SELECT * FROM activities WHERE activity_id = ${params.activity_id || "(SELECT MAX(activity_id) FROM activities)"}`, (err, a_data) => {
+          resolve(a_data);
+        });
+      });
     });
   }
 
-  // Event-Item functions
-
-  setEventItem(params) {
-    return new Promise((resolve, reject) => {
-      if (params == null || params.event_title == null || !params.event_title.length) return reject("invalid parameters");
-
-      const event_id = params.event_id;
-      const event_title = params.event_title || "";
-      const event_text = params.event_text || "";
-      const event_subevent_ids = params.event_subevent_ids || "";
-
-      resolve();
-    });
-  }
 }
 
 module.exports = new Database();

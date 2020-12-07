@@ -1,6 +1,10 @@
 var express = require('express');
+var bodyParser = require('body-parser');
 var server = express();
 const apiRoute = require("./routes/api");
+
+server.use(bodyParser.urlencoded({extended:true}));
+server.use(bodyParser.json());
 
 server.use(express.static(__dirname + "/public"));
 

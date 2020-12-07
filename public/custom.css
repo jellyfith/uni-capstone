@@ -49,13 +49,13 @@ html,body {
     margin-bottom: 0.75rem;
 }
 
-.button-container {
+.event-button-container {
     margin: 0;
     display: flex;
     flex-direction: row;
 }
 
-.button-container button {
+.event-button-container button {
     margin: 0;
 }
 
@@ -79,4 +79,42 @@ html,body {
 }
 .edit-event-button:hover, .edit-activity-button:hover {
     color: #0056b3
+}
+.activity-name-input,.activity-content,.edit-activity-button,.activity-button-container,.event-button-container {
+    margin: 0;
+}
+.activity-button-container {
+    text-align: right;
+    margin-bottom: -24px;
+}
+.activity-button-container * {
+    margin-bottom: 0;
+}
+.event-button-container {
+    margin-bottom: -10px;
+}
+
+.edit-button, .save-button, .cancel-button {
+    position: fixed;
+    bottom: 0.5rem;
+}
+.edit-button {
+    right: 0.5rem;
+}
+.save-button {
+    right: 5.5rem;
+}
+.cancel-button {
+    right: 0.5rem;
+}
+.card-header {
+    margin-bottom: 0;
+}
+#plan-title-input {
+    width: 50rem;
+    max-width: 75%;
+    margin: auto;
+    height: 3.75rem;
+    font-size: 2rem;
+    text-align: center;
 }
