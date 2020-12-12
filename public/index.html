@@ -32,7 +32,7 @@
             <input id="plan-title-input" type="text" class="form-control" placeholder="Plan Title" hidden>
         </div>
         <div id="add-new-container" class="container-fluid">
-            <button class="btn bg-light text-left" style="width: 50rem; max-width: 75%;" id="add-new-btn" onclick="addNewEvent()">
+            <button class="btn bg-light text-left" style="width: 50rem; max-width: 75%; margin-bottom: 2rem;" id="add-new-btn" onclick="addNewEvent()">
                 <i class="fas fa-plus-square color-green" style="vertical-align: middle; font-size: 3rem;"></i>
                 <span style="font-size: 1.25rem; vertical-align:middle; padding-left: 0.75rem;">Add New Event</span>
             </button>
@@ -53,9 +53,10 @@
                 </div>
                 <div class="modal-body">
                     <p>Use the following URL to get back to this page from any computer.</p>
-                    <span id="plan-url"></span>
+                    <input id="plan-url" class="w-100">
                 </div>
                 <div class="modal-footer">
+                    <span id="copied-msg"></span>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
             </div>

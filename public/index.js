@@ -9,13 +9,8 @@ function init() {
 	let searchParams = new URLSearchParams(window.location.search);
 	if (searchParams.get('plan') != null) {
 		loadPlan(searchParams.get('plan'));
-		enableEdit();
-	// } else {
-	// 	createNewPlan();
-	}
-}
-function enableEdit() {
 	$(".edit-button").prop("hidden", false);
+	}
 }
 function loadPlan(plan_id) {
 	$.get('/api/getPlan', {plan_id: plan_id} ).done(p => {
@@ -37,6 +32,8 @@ function loadPlan(plan_id) {
 			});
 			$eventContainer.append($eventHTML);
 		});
+		$('.close-event').prop('hidden', true);
+		$('.close-activity').prop('hidden', true);
 		$(".edit-button").prop("hidden", false);
 	});
 }
@@ -61,10 +58,12 @@ function editPlan() {
 	$(".save-button").prop("hidden", false);
 	$(".cancel-button").prop("hidden", false);
 	$(".edit-button").prop("hidden", true);
+	$('.close-event').prop('hidden', false);
+	$('.close-activity').prop('hidden', false);
 }
 function savePlan() {
-	let getID = function($z) {
-		let id = $($z).attr("id");
+	let getID = function(z) {
+		let id = $(z).attr("id");
 		id = id.replace("event-", "");
 		id = id.replace("activity-", "");
 		if (id.length == 0 || isNaN(parseInt(id))) return null;
@@ -101,62 +100,70 @@ function savePlan() {
 		contentType: "application/json",
 		data: JSON.stringify(p)
 	}).done(data => {
-		console.log('data', data)
 		plan = data;
-		$("#plan-title-display").val(plan.plan_name);
-		if (plan.events == null) plan.events = [];
+		events = [];
+		activities = [];
+		console.log('plan :>> ', plan);
+
+		$('#plan-title-display').text(plan.plan_name);
+		$('#plan-title-display').prop("hidden", false);
+		$('#plan-title-input').prop("hidden", true);
+		let $eventContainer = $('#event-container');
+		$(".base-event").each(function() {$(this).remove();});
 		plan.events.forEach(event => {
-			let $event = $(`#event-${event.event_id}`);
-			$event.find(".name-display").val(event.event_title);
-			$event.find(".notes-display").val(event.notes);
+			events.push(event);
+			let $eventHTML = $($.parseHTML(eventHTML(event)));
+			let $eventBody = $eventHTML.find('.card-body');
 			event.activities.forEach(activity => {
-				let $activity = $(`#activity-${activity.id}`);
-				$activity.find(".name-display").val(activity.activity_content);
-				$activity.find(".notes-display").val(activity.notes);
+				activities.push(activity);
+				let $activityHTML = $($.parseHTML(activityHTML(activity)));
+				$eventBody.find(".event-button-container").before($activityHTML);
 			});
+			$eventContainer.append($eventHTML);
 		});
-		$("#plan-title-display").prop("hidden", false);
-		$("#plan-title-input").prop("hidden", true);
-		$(`.name-input`).prop("hidden", true);
-		$(`.name-display`).prop("hidden", false);
-		$(`.notes-input`).prop("hidden", true);
-		$(`.notes-display`).prop("hidden", false);
-		$(".event-button-container").prop("hidden", true);
 		$(".save-button").prop("hidden", true);
 		$(".cancel-button").prop("hidden", true);
 		$(".edit-button").prop("hidden", false);
-		$("#plan-url").text(`https://vacation-planning-app.herokuapp.com/?plan=${plan.plan_id}`);
+		$('.close-event').prop('hidden', true);
+		$('.close-activity').prop('hidden', true);
+		$("#plan-url").val(`https://vacation-planning-app.herokuapp.com/?plan=${plan.plan_id}`);
 		$("#plan-modal").modal("show");
+		$("#plan-url").select();
+		try {
+			document.execCommand('copy');
+			$("#copied-msg").text("Copied to clipboard!");
+			if (history.pushState)
+				history.pushState({}, 'Vacation Planner - Plan - ' + plan.plan_name, `/?plan=${plan.plan_id}`);
+			setTimeout(() => {
+				$("#copied-msg").text("");
+			}, 5000);
+		} catch (error) {
+			console.error(error)
+		}
 	});
 }
 function cancelEdit() {
-	$("#plan-title-display").prop("hidden", false);
-	$("#plan-title-input").prop("hidden", true);
-	$(`.name-input`).prop("hidden", true);
-	$(`.name-display`).prop("hidden", false);
-	$(`.notes-input`).prop("hidden", true);
-	$(`.notes-display`).prop("hidden", false);
-	$(".event-button-container").prop("hidden", true);
+	$('#plan-title-display').text(plan.plan_name);
+	$('#plan-title-display').prop("hidden", false);
+	$('#plan-title-input').prop("hidden", true);
+	let $eventContainer = $('#event-container');
+	$(".base-event").each(function() {$(this).remove();});
+	plan.events.forEach(event => {
+		events.push(event);
+		let $eventHTML = $($.parseHTML(eventHTML(event)));
+		let $eventBody = $eventHTML.find('.card-body');
+		event.activities.forEach(activity => {
+			activities.push(activity);
+			let $activityHTML = $($.parseHTML(activityHTML(activity)));
+			$eventBody.find(".event-button-container").before($activityHTML);
+		});
+		$eventContainer.append($eventHTML);
+	});
+	$(".edit-button").prop("hidden", false);
 	$(".save-button").prop("hidden", true);
 	$(".cancel-button").prop("hidden", true);
-	$(".edit-button").prop("hidden", false);
-	$("#plan-title-input").val("");
-	$(".name-input").val("");
-	$(".notes-input").val("");
+}
 
-	$(`div[id="event-"]`).remove();
-}
-function saveEvent(event_id) {
-	let $eventNameInput = $(`#event-${event_id} .event name-input`);
-	let $eventNameDisplay = $(`#event-${event_id} .event name`);
-	let $eventButtonContainer = $(`#event-${event_id} .event-button-container`);
-	let $eventEditButton = $(`#event-${event_id} .edit-event-button`);
-	if ($eventNameInput == null || $eventNameDisplay == null || $eventButtonContainer == null || $eventEditButton == null) return;
-	$eventNameInput.hidden = false;
-	$eventNameDisplay.hidden = true;
-	$eventButtonContainer.hidden = false;
-	$eventEditButton.hidden = true;
-}
 function addNewEvent() {
 	let $eventContainer = $('#event-container');
 	let $event = $($.parseHTML(eventHTML()));
@@ -166,51 +173,6 @@ function addNewEvent() {
 	if ($("#plan-title-input").val() === "") return $("#plan-title-input").focus();
 	$event.find('.name-input').focus();
 }
-function editEvent(event_id) {
-	let event = events.find(x => x.event_id === event_id);
-	if (event == null) return;
-	let $eventNameInput = $(`#event-${event_id} .event name-input`);
-	let $eventNameDisplay = $(`#event-${event_id} .event-name`);
-	let $eventButtonContainer = $(`#event-${event_id} .event-button-container`);
-	let $eventEditButton = $(`#event-${event_id} .edit-event-button`);
-	let $eventNotesInput = $(`#event-${event_id} .notes-input`);
-	let $eventNotesDisplay = $(`#event-${event_id} .notes-display`);
-
-	$eventNameInput.val(event.event_title);
-	$eventNotesInput.val(event.notes);
-	
-	$eventNameInput.prop("hidden", false);
-	$eventNameDisplay.prop("hidden", true);
-	$eventButtonContainer.prop("hidden", false);
-	$eventEditButton.prop("hidden", true);
-	$eventNotesInput.prop("hidden", false);
-	$eventNotesDisplay.prop("hidden", true);
-}
-function saveEvent(event_id) {
-	let event = events.find(x => x.event_id === event_id);
-	if (event == null) return;
-	let $eventNameInput = $(`#event-${event_id} .event name-input`);
-	let $eventNameDisplay = $(`#event-${event_id} .event-name`);
-	let $eventButtonContainer = $(`#event-${event_id} .event-button-container`);
-	let $eventEditButton = $(`#event-${event_id} .edit-event-button`);
-	let $eventNotesInput = $(`#event-${event_id} .notes-input`);
-	let $eventNotesDisplay = $(`#event-${event_id} .notes-display`);
-
-	$eventNameInput.val(event.event_title);
-	$eventNotesInput.val(event.notes);
-	
-	$eventNameInput.prop("hidden", true);
-	$eventNameDisplay.prop("hidden", false);
-	$eventButtonContainer.prop("hidden", true);
-	$eventEditButton.prop("hidden", false);
-	$eventNotesInput.prop("hidden", true);
-	$eventNotesDisplay.prop("hidden", false);
-}
-function deleteEvent(event_id) {
-	
-}
-
-
 
 function addActivity(event_id) {
 	let $eventContainer = $('.event-button-container');
@@ -219,49 +181,10 @@ function addActivity(event_id) {
 	$activity.find('.name-display').prop('hidden', true);
 	$activity.find('.notes-input').prop('hidden', false);
 	$activity.find('.notes-display').prop('hidden', true);
+	$activity.find('.close-event').prop('hidden', false);
+	$activity.find('.close-activity').prop('hidden', false);
 	$eventContainer.before($activity);
 	$activity.find('.name-input').focus();
-}
-function editActivity(activity_id) {
-	let activity = activities.find(x => x.activity_id === activity_id);
-	if (activity == null) return;
-	let $activityNameInput = $(`#activity-${activity_id} .activity name-input`);
-	let $activityNameDisplay = $(`#activity-${activity_id} .activity content`);
-	let $activityEditButton = $(`#activity-${activity_id} .edit-activity-button`);
-	let $activityNotesInput = $(`#activity-${activity_id} .notes-input`);
-	let $activityNotesDisplay = $(`#activity-${activity_id} .notes-display`);
-
-	$activityNameInput.val(activity.activity_content);
-	$activityNotesInput.val(activity.notes);
-	
-	$activityNameInput.prop("hidden", false);
-	$activityNameDisplay.prop("hidden", true);
-	$activityEditButton.prop("hidden", true);
-	$activityNotesInput.prop("hidden", false);
-	$activityNotesDisplay.prop("hidden", true);
-}
-function saveActivity(activity_id) {
-	let activity = activities.find(x => x.activity_id === activity_id);
-	if (activity == null) return;
-	let $activityNameInput = $(`#activity-${activity_id} .activity name-input`);
-	let $activityNameDisplay = $(`#activity-${activity_id} .activity content`);
-	let $activityButtonContainer = $(`#activity-${activity_id} .activity-button-container`);
-	let $activityEditButton = $(`#activity-${activity_id} .edit-activity-button`);
-	let $activityNotesInput = $(`#activity-${activity_id} .notes-input`);
-	let $activityNotesDisplay = $(`#activity-${activity_id} .notes-display`);
-
-	$activityNameDisplay.text(activity.activity_content);
-	$activityNotesDisplay.text(activity.notes);
-	
-	$activityNameInput.prop("hidden", true);
-	$activityNameDisplay.prop("hidden", false);
-	$activityButtonContainer.prop("hidden", true);
-	$activityEditButton.prop("hidden", false);
-	$activityNotesInput.prop("hidden", true);
-	$activityNotesDisplay.prop("hidden", false);
-}
-function deleteActivity(activity_id) {
-
 }
 
 function eventHTML(event = {}) {
@@ -270,6 +193,11 @@ function eventHTML(event = {}) {
 			<div class="card-header">
 				<input type="text" class="form-control event name-input" placeholder="Event Name" hidden>
 				<span class="event name-display">${event.event_title || ""}</span>
+				<button type="button" class="close close-event" aria-label="Close"
+					onclick="$(this).closest('.base-event').remove()"
+				>
+					<span aria-hidden="true">&times;</span>
+				</button>
 			</div>
 			<div class="card-body">
 				<textarea class="form-control event notes-input" rows="3" placeholder="Notes" hidden></textarea>
@@ -287,6 +215,11 @@ function activityHTML(activity = {}) {
             <div class="card-header">
                 <input type="text" class="form-control activity name-input" placeholder="Activity Name" hidden>
                 <span class="activity name-display">${activity.activity_content || ""}</span>
+				<button type="button" class="close close-activity" aria-label="Close"
+					onclick="$(this).closest('.base-activity').remove()"
+				>
+					<span aria-hidden="true">&times;</span>
+				</button>
             </div>
 			<div class="card-body">
 				<textarea class="form-control activity notes-input" rows="3" placeholder="Notes" hidden></textarea>

@@ -108,8 +108,19 @@ html,body {
     right: 0.5rem;
 }
 .card-header {
+    display: flex;
+    flex-direction: row;
     margin-bottom: 0;
 }
+.card-header * {
+    flex: 1 1 auto;
+}
+.card-header button {
+    flex: 0 1 auto;
+    margin-left: 0.75rem;
+}
+
+
 #plan-title-input {
     width: 50rem;
     max-width: 75%;
