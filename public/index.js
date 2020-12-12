@@ -35,6 +35,7 @@ function loadPlan(plan_id) {
 		$('.close-event').prop('hidden', true);
 		$('.close-activity').prop('hidden', true);
 		$(".edit-button").prop("hidden", false);
+		if (plan_id == 1) $(".edit-button").prop("hidden", true);
 	});
 }
 function editPlan() {
@@ -147,11 +148,12 @@ function savePlan() {
 	});
 }
 function cancelEdit() {
+	console.log('cancelEdit', plan)
 	$('#plan-title-display').text(plan.plan_name);
 	$('#plan-title-display').prop("hidden", false);
 	$('#plan-title-input').prop("hidden", true);
 	let $eventContainer = $('#event-container');
-	$(".base-event").each(() => $(this).remove());
+	$(".base-event").each(function() {$(this).remove()});
 	if (plan.events == null) plan.events = [];
 	plan.events.forEach(event => {
 		events.push(event);
@@ -181,8 +183,8 @@ function addNewEvent() {
 	$('html, body').animate({scrollTop: $event.find('.name-input').offset().top }, 300);
 }
 
-function addActivity(event_id) {
-	let $eventContainer = $('.event-button-container');
+function addActivity(element) {
+	let $eventContainer = $(element).closest('.event-button-container');
 	let $activity = $($.parseHTML(activityHTML()));
 	$activity.find('.name-input').prop('hidden', false);
 	$activity.find('.name-display').prop('hidden', true);
@@ -211,7 +213,7 @@ function eventHTML(event = {}) {
 				<textarea class="form-control event notes-input" rows="3" placeholder="Notes" hidden></textarea>
 				<div class="event notes-display">${event.notes || ""}</div>
 				<div class="event-button-container" hidden>
-					<button class="btn btn-secondary mr-2" onclick="addActivity(${event.event_id || ""})">Add Activity</button>
+					<button class="btn btn-secondary mr-2" onclick="addActivity(this)">Add Activity</button>
 				</div>
 			</div>
 		</div>
