@@ -70,6 +70,7 @@ function savePlan() {
 		if (id.length == 0 || isNaN(parseInt(id))) return null;
 		return parseInt(id);
 	}
+	console.dir($("#plan-title-input").val())
 	let p = {
 		plan_id: plan.plan_id || null,
 		plan_name: $("#plan-title-input").val(),
@@ -98,11 +99,12 @@ function savePlan() {
 		url: "/api/savePlan",
 		type: "POST",
 		contentType: "application/json",
-		data: JSON.stringify(plan)
+		data: JSON.stringify(p)
 	}).done(data => {
 		console.log('data', data)
 		plan = data;
 		$("#plan-title-display").val(plan.plan_name);
+		if (plan.events == null) plan.events = [];
 		plan.events.forEach(event => {
 			let $event = $(`#event-${event.event_id}`);
 			$event.find(".name-display").val(event.event_title);
@@ -123,6 +125,8 @@ function savePlan() {
 		$(".save-button").prop("hidden", true);
 		$(".cancel-button").prop("hidden", true);
 		$(".edit-button").prop("hidden", false);
+		$("#plan-url").text(`https://vacation-planning-app.herokuapp.com/?plan=${plan.plan_id}`);
+		$("#plan-modal").modal("show");
 	});
 }
 function cancelEdit() {
@@ -139,6 +143,8 @@ function cancelEdit() {
 	$("#plan-title-input").val("");
 	$(".name-input").val("");
 	$(".notes-input").val("");
+
+	$(`div[id="event-"]`).remove();
 }
 function saveEvent(event_id) {
 	let $eventNameInput = $(`#event-${event_id} .event name-input`);
@@ -153,8 +159,12 @@ function saveEvent(event_id) {
 }
 function addNewEvent() {
 	let $eventContainer = $('#event-container');
-	$eventContainer.append($($.parseHTML(eventHTML(event))));
+	let $event = $($.parseHTML(eventHTML()));
+	$eventContainer.append($event);
 	$(".edit-button").prop("hidden", false);
+	editPlan();
+	if ($("#plan-title-input").val() === "") return $("#plan-title-input").focus();
+	$event.find('.name-input').focus();
 }
 function editEvent(event_id) {
 	let event = events.find(x => x.event_id === event_id);
@@ -203,7 +213,14 @@ function deleteEvent(event_id) {
 
 
 function addActivity(event_id) {
-
+	let $eventContainer = $('.event-button-container');
+	let $activity = $($.parseHTML(activityHTML()));
+	$activity.find('.name-input').prop('hidden', false);
+	$activity.find('.name-display').prop('hidden', true);
+	$activity.find('.notes-input').prop('hidden', false);
+	$activity.find('.notes-display').prop('hidden', true);
+	$eventContainer.before($activity);
+	$activity.find('.name-input').focus();
 }
 function editActivity(activity_id) {
 	let activity = activities.find(x => x.activity_id === activity_id);
@@ -247,35 +264,33 @@ function deleteActivity(activity_id) {
 
 }
 
-function eventHTML(event) {
-	if (event == null) return "";
+function eventHTML(event = {}) {
 	return `
-		<div class="card base-event" id="event-${event.event_id}">
+		<div class="card base-event" id="event-${event.event_id || ""}">
 			<div class="card-header">
 				<input type="text" class="form-control event name-input" placeholder="Event Name" hidden>
-				<span class="event name-display">${event.event_title || "Event Name"}</span>
+				<span class="event name-display">${event.event_title || ""}</span>
 			</div>
 			<div class="card-body">
 				<textarea class="form-control event notes-input" rows="3" placeholder="Notes" hidden></textarea>
-				<div class="event notes-display">${event.notes || "Notes"}</div>
+				<div class="event notes-display">${event.notes || ""}</div>
 				<div class="event-button-container" hidden>
-					<button class="btn btn-secondary mr-2" onclick="addActivity(${event.event_id})">Add Activity</button>
+					<button class="btn btn-secondary mr-2" onclick="addActivity(${event.event_id || ""})">Add Activity</button>
 				</div>
 			</div>
 		</div>
 	`;
 }
-function activityHTML(activity) {
-	if (activity == null) return "";
+function activityHTML(activity = {}) {
 	return `
-        <div class="card base-activity" id="activity-${activity.activity_id}">
+        <div class="card base-activity" id="activity-${activity.activity_id || ""}">
             <div class="card-header">
                 <input type="text" class="form-control activity name-input" placeholder="Activity Name" hidden>
-                <span class="activity name-display">${activity.activity_content || "Activity Name"}</span>
+                <span class="activity name-display">${activity.activity_content || ""}</span>
             </div>
 			<div class="card-body">
 				<textarea class="form-control activity notes-input" rows="3" placeholder="Notes" hidden></textarea>
-				<div class="activity notes-display">${activity.notes || "Notes"}</div>
+				<div class="activity notes-display">${activity.notes || ""}</div>
             </div>
         </div>
 	`;

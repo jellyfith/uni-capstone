@@ -41,5 +41,25 @@
         <button class="btn btn-green edit-button" onclick="editPlan()" hidden>Edit</button>
         <button class="btn btn-secondary cancel-button" onclick="cancelEdit()" hidden>Cancel</button>
     </div>
+
+    <div class="modal" tabindex="-1" role="dialog" id="plan-modal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Write this down!</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Use the following URL to get back to this page from any computer.</p>
+                    <span id="plan-url"></span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
