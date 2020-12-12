@@ -40,10 +40,14 @@ function loadPlan(plan_id) {
 function editPlan() {
 	$("#plan-title-input").val($("#plan-title-display").text());
 	$(".base-event").each((i, e) => {
-		$(e).children().find(".name-input").val($(e).children().find(".name-display").text());
-		$(e).children().find(".notes-input").val($(e).children().find(".notes-display").text());
+		if ($(e).children().find(".name-input").prop("hidden")) 
+			$(e).children().find(".name-input").val($(e).children().find(".name-display").text());
+		if ($(e).children().find(".notes-input").prop("hidden")) 
+			$(e).children().find(".notes-input").val($(e).children().find(".notes-display").text());
 		$(e).find(".base-activity").each((i, a) => {
+		if ($(a).children().find(".name-input").prop("hidden")) 
 			$(a).children().find(".name-input").val($(a).children().find(".name-display").text());
+		if ($(a).children().find(".notes-input").prop("hidden")) 
 			$(a).children().find(".notes-input").val($(a).children().find(".notes-display").text());
 		});
 	});
@@ -147,7 +151,8 @@ function cancelEdit() {
 	$('#plan-title-display').prop("hidden", false);
 	$('#plan-title-input').prop("hidden", true);
 	let $eventContainer = $('#event-container');
-	$(".base-event").each(function() {$(this).remove();});
+	$(".base-event").each(() => $(this).remove());
+	if (plan.events == null) plan.events = [];
 	plan.events.forEach(event => {
 		events.push(event);
 		let $eventHTML = $($.parseHTML(eventHTML(event)));
@@ -170,8 +175,10 @@ function addNewEvent() {
 	$eventContainer.append($event);
 	$(".edit-button").prop("hidden", false);
 	editPlan();
-	if ($("#plan-title-input").val() === "") return $("#plan-title-input").focus();
+	// if ($("#plan-title-input").val() === "") return $("#plan-title-input").focus();
 	$event.find('.name-input').focus();
+	console.log('$event', $event)
+	$('html, body').animate({scrollTop: $event.find('.name-input').offset().top }, 300);
 }
 
 function addActivity(event_id) {
@@ -185,6 +192,7 @@ function addActivity(event_id) {
 	$activity.find('.close-activity').prop('hidden', false);
 	$eventContainer.before($activity);
 	$activity.find('.name-input').focus();
+	$('html, body').animate({scrollTop: $activity.find('.name-input').offset().top }, 300);
 }
 
 function eventHTML(event = {}) {
