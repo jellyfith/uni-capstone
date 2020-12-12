@@ -22,7 +22,7 @@ class Database {
         //
         await this.createDB(this.DB);
         console.log('db_manager::initializeDB::db created');
-        await this.validateDBUpdates();
+        await this.checkDBUpdates();
         resolve();
       } else {
         console.log('db_manager::initializeDB::loading::begin');
@@ -32,7 +32,7 @@ class Database {
             return console.error(`db_manager::initializeDB::err${err.message}`);
           }
         });
-        await this.validateDBUpdates();
+        await this.checkDBUpdates();
         resolve();
         console.log('db_manager::initializeDB::loading::end');
       }
@@ -50,27 +50,27 @@ class Database {
       resolve();
     });
   }
-  validateDBUpdates() {
+  checkDBUpdates() {
     return new Promise((resolve, reject) => {
-      console.log('db_manager::validateDBUpdates');
+      console.log('db_manager::checkDBUpdates');
       this.DB.serialize(() =>{
         this.DB.get("PRAGMA user_version", (err, db) => {
           if (err) {
-            console.error(`db_manager::validateDBUpdates::get user_version::err - ${err}`);
+            console.error(`db_manager::checkDBUpdates::get user_version::err - ${err}`);
             return;
           }
           if(db == undefined || db.length === 0) return;
-          console.log(`db_manager::validateDBUpdates::dbVersion[${db.user_version}]`);
+          console.log(`db_manager::checkDBUpdates::dbVersion[${db.user_version}]`);
           const file = `./db_updates/DB_UPDATE_${db.user_version}.sql`;
           if(fs.existsSync(file)){
-            console.log(`db_manager::validateDBUpdates::db applying[${file}]`);
+            console.log(`db_manager::checkDBUpdates::db applying[${file}]`);
             fs.readFile(file, 'utf8', (err, data) => {
               if (err) { 
-                console.error(`db_manager::validateDBUpdates::db error reading update file[${file}]`);
+                console.error(`db_manager::checkDBUpdates::db error reading update file[${file}]`);
                 return reject(err); // error reading update file
               // throw err; // error reading update file
               }
-              console.log(`db_manager::validateDBUpdates::validateDBUpdates::db update begin[${file}]`);
+              console.log(`db_manager::checkDBUpdates::checkDBUpdates::db update begin[${file}]`);
               this.DB.serialize(() => { 
                 try {
                   this.DB.exec(data); 
@@ -79,12 +79,12 @@ class Database {
                   console.error(e);
                   return reject(e);
                 }
-                resolve(this.validateDBUpdates());
+                resolve(this.checkDBUpdates());
               });
-              console.log(`db_manager::validateDBUpdates::update end[${file}]`);
+              console.log(`db_manager::checkDBUpdates::update end[${file}]`);
             });
           } else {
-            console.info(`db_manager::validateDBUpdates::db up to date`);
+            console.info(`db_manager::checkDBUpdates::db up to date`);
             resolve();
           }
         });
