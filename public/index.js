@@ -35,7 +35,12 @@ function loadPlan(plan_id) {
 		$('.close-event').prop('hidden', true);
 		$('.close-activity').prop('hidden', true);
 		$(".edit-button").prop("hidden", false);
-		if (plan_id == 1) $(".edit-button").prop("hidden", true);
+		$("#add-new-btn").prop("hidden", false);
+		if (plan_id == 1) {
+			$(".edit-button").prop("hidden", true);
+			$("#add-new-btn").prop("hidden", true);
+			
+		}
 	});
 }
 function editPlan() {
