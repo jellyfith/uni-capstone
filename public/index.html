@@ -62,9 +62,8 @@
                 $.get('/api/searchForPlan', {searchParam: val} ).done(plans => {
                     if (working != workingNow) return;
                     plans.forEach(plan => {
-                            // <li class="list-group-item" onclick="window.location = 'https://vacation-planning-app.herokuapp.com/plan?plan=${plan.plan_id}'">
                         $(resultList).append(`
-                            <li class="list-group-item" onclick="window.location = 'http://localhost:8080/plan?plan=${plan.plan_id}'">
+                            <li class="list-group-item" onclick="window.location = 'https://vacation-planning-app.herokuapp.com/plan?plan=${plan.plan_id}'">
                                     ${plan.plan_name}
                             </li>`);
                     });
