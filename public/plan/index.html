@@ -49,28 +49,32 @@
         <button class="btn btn-green bottom-right edit-button" onclick="editPlan()" hidden>Edit</button>
         <button class="btn btn-secondary bottom-right cancel-button" onclick="cancelEdit()" hidden>Cancel</button>
         <button class="btn btn-secondary bottom-right share-button" onclick="sharePlan()" hidden>Share</button>
-        <div id="copied-msg" class="bottom-right" hidden>URL Copied to Clipboard!</span>
+        <div id="copied-msg" class="bottom-right" hidden>URL Copied to Clipboard!</div>
     </div>
 
-    <!-- <div class="modal" tabindex="-1" role="dialog" id="plan-modal">
+    <div class="modal" tabindex="-1" role="dialog" id="plan-modal">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Write this down!</h5>
+                    <h5 class="modal-title">Plan Saved!</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <p>Use the following URL to get back to this page from any computer.</p>
-                    <input id="plan-url" class="w-100">
+                    How to access your plan:
+                    <ul>
+                        <li>Search the home page for your plan's name (<span id="plan-name-span"></span>)</li>
+                        <li>Press the Share button to copy the plan's URL!</li>
+                    </ul>
                 </div>
                 <div class="modal-footer">
-                    <span id="copied-msg"></span>
+                    <div id="copied-msg-modal" hidden>URL Copied to Clipboard!</div>
+                    <button type="button" class="btn btn-green" onclick="sharePlan()">Share</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
-    </div> -->
+    </div>
 </body>
 </html>

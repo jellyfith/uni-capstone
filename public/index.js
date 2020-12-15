@@ -144,6 +144,8 @@ function savePlan() {
 		$('.close-activity').prop('hidden', true);
 		if (history.pushState)
 			history.pushState({}, 'Vacation Planner - Plan - ' + plan.plan_name, `/plan/?plan=${plan.plan_id}`);
+		$("#plan-name-span").text(plan.plan_name);
+		$("#plan-modal").modal("show");
 	});
 }
 function sharePlan() {
@@ -151,8 +153,10 @@ function sharePlan() {
 		try {
 			navigator.clipboard.writeText(url);
 			$("#copied-msg").prop("hidden", false);
+			$("#copied-msg-modal").prop("hidden", false);
 			setTimeout(() => {
 				$("#copied-msg").prop("hidden", true);
+				$("#copied-msg-modal").prop("hidden", true);
 			}, 5000);
 		} catch (error) {
 			console.error(error)
