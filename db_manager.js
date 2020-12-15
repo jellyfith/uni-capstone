@@ -155,7 +155,15 @@ class Database {
       });
     });
   }
-
+  searchForPlan(params) {
+    return new Promise((resolve, reject) => {
+      if (!params) return resolve([]);
+      this.DB.all(`SELECT plan_id, plan_name FROM plans WHERE plan_name LIKE '%${params.searchParam || ""}%' LIMIT 10`, (err, rows) => {
+        if (err) return resolve([]);
+        resolve(rows);
+      });
+    });
+  }
   savePlan(params) {
     console.dir("savePlan");
     return new Promise(async (resolve, reject) => {

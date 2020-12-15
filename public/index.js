@@ -7,9 +7,11 @@ init();
 
 function init() {
 	let searchParams = new URLSearchParams(window.location.search);
+	console.log('searchParams.get()', searchParams.get('plan'))
 	if (searchParams.get('plan') != null) {
 		loadPlan(searchParams.get('plan'));
 	$(".edit-button").prop("hidden", false);
+	$(".share-button").prop("hidden", false);
 	}
 }
 function loadPlan(plan_id) {
@@ -35,9 +37,11 @@ function loadPlan(plan_id) {
 		$('.close-event').prop('hidden', true);
 		$('.close-activity').prop('hidden', true);
 		$(".edit-button").prop("hidden", false);
+		$(".share-button").prop("hidden", false);
 		$("#add-new-btn").prop("hidden", false);
 		if (plan_id == 1) {
 			$(".edit-button").prop("hidden", true);
+			$(".share-button").prop("hidden", true);
 			$("#add-new-btn").prop("hidden", true);
 			
 		}
@@ -67,6 +71,7 @@ function editPlan() {
 	$(".event-button-container").prop("hidden", false);
 	$(".save-button").prop("hidden", false);
 	$(".cancel-button").prop("hidden", false);
+	$(".share-button").prop("hidden", true);
 	$(".edit-button").prop("hidden", true);
 	$('.close-event').prop('hidden', false);
 	$('.close-activity').prop('hidden', false);
@@ -134,23 +139,24 @@ function savePlan() {
 		$(".save-button").prop("hidden", true);
 		$(".cancel-button").prop("hidden", true);
 		$(".edit-button").prop("hidden", false);
+		$(".share-button").prop("hidden", false);
 		$('.close-event').prop('hidden', true);
 		$('.close-activity').prop('hidden', true);
-		$("#plan-url").val(`https://vacation-planning-app.herokuapp.com/?plan=${plan.plan_id}`);
-		$("#plan-modal").modal("show");
-		$("#plan-url").select();
+		if (history.pushState)
+			history.pushState({}, 'Vacation Planner - Plan - ' + plan.plan_name, `/plan/?plan=${plan.plan_id}`);
+	});
+}
+function sharePlan() {
+		let url = `https://vacation-planning-app.herokuapp.com/plan/?plan=${plan.plan_id}`;
 		try {
-			document.execCommand('copy');
-			$("#copied-msg").text("Copied to clipboard!");
-			if (history.pushState)
-				history.pushState({}, 'Vacation Planner - Plan - ' + plan.plan_name, `/?plan=${plan.plan_id}`);
+			navigator.clipboard.writeText(url);
+			$("#copied-msg").prop("hidden", false);
 			setTimeout(() => {
-				$("#copied-msg").text("");
+				$("#copied-msg").prop("hidden", true);
 			}, 5000);
 		} catch (error) {
 			console.error(error)
 		}
-	});
 }
 function cancelEdit() {
 	console.log('cancelEdit', plan)
@@ -172,8 +178,13 @@ function cancelEdit() {
 		$eventContainer.append($eventHTML);
 	});
 	$(".edit-button").prop("hidden", false);
+	$(".share-button").prop("hidden", false);
 	$(".save-button").prop("hidden", true);
 	$(".cancel-button").prop("hidden", true);
+	if (!events.length) {
+		$(".share-button").prop("hidden", true);
+		$(".edit-button").prop("hidden", true);
+	}
 }
 
 function addNewEvent() {
@@ -208,7 +219,7 @@ function eventHTML(event = {}) {
 			<div class="card-header">
 				<input type="text" class="form-control event name-input" placeholder="Event Name" hidden>
 				<span class="event name-display">${event.event_title || ""}</span>
-				<button type="button" class="close close-event" aria-label="Close"
+				<button type="button" class="close close-event" aria-label="Close" tab-index="-1"
 					onclick="$(this).closest('.base-event').remove()"
 				>
 					<span aria-hidden="true">&times;</span>
@@ -230,7 +241,7 @@ function activityHTML(activity = {}) {
             <div class="card-header">
                 <input type="text" class="form-control activity name-input" placeholder="Activity Name" hidden>
                 <span class="activity name-display">${activity.activity_content || ""}</span>
-				<button type="button" class="close close-activity" aria-label="Close"
+				<button type="button" class="close close-activity" aria-label="Close" tab-index="-1"
 					onclick="$(this).closest('.base-activity').remove()"
 				>
 					<span aria-hidden="true">&times;</span>

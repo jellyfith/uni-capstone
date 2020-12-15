@@ -12,6 +12,11 @@ db_manager.initializeDB().then(() => {
             res.send(data);
         });
     });
+    router.get('/searchForPlan', function(req, res, next) {
+        db_manager.searchForPlan(req.query).then(data => {
+            res.send(data);
+        });
+    });
     router.post('/savePlan', function(req, res, next) {
         db_manager.savePlan(req.body).then(data => {
             res.send(data);
