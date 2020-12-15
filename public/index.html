@@ -38,7 +38,17 @@
         <div class="container">
             <div class="my-4">
                 Welcome to Vacation Planner! To create a new plan, head on over to the <a href="/plan">New Plan Page</a>!!<br>
-                Once you save a plan, you will be given a URL to access that plan later. Make sure to keep track of this so that you can get back to your plans in the future!<br>
+                If you have your plan's unique identifier, enter it here:
+                <form method="post" onsubmit="event.preventDefault(); windowNav()">
+                    <div class="form-row">
+                        <div class="col-auto flex-grow-1">
+                            <input class="form-control" type="text" id="uniqueID" placeholder="Ex: 90210">
+                        </div>
+                        <div class="col-auto">
+                            <button class="btn btn-green" type="button" onclick="windowNav()">Submit</button>
+                        </div>
+                    </div>
+                </form>
                 Otherwise, search for your plan here! Please be mindful of others plans and only modify your own.
             </div>
             <div class="my-4">
@@ -69,6 +79,12 @@
                     });
                 });
             }
+        }
+        var windowNav = () => {
+            $.get('/api/getPlan', {plan_id: uniqueID.value} ).done(plan => {
+                if (plan.plan_id != null) return window.location.href = `https://vacation-planning-app.herokuapp.com/plan/?plan=${plan.plan_id}`;
+                alert("Plan not found! Try searching for it by name!")
+            });
         }
     </script>
 </body>
