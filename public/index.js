@@ -145,6 +145,7 @@ function savePlan() {
 		if (history.pushState)
 			history.pushState({}, 'Vacation Planner - Plan - ' + plan.plan_name, `/plan/?plan=${plan.plan_id}`);
 		$("#plan-name-span").text(plan.plan_name);
+		$("#plan-id-span").text(plan.plan_id);
 		$("#plan-modal").modal("show");
 	});
 }
