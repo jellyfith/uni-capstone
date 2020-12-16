@@ -38,6 +38,8 @@
         <div class="container">
             <div class="my-4">
                 Welcome to Vacation Planner! To create a new plan, head on over to the <a href="/plan">New Plan Page</a>!!<br>
+            </div>
+            <div class="my-4">
                 If you have your plan's unique identifier, enter it here:
                 <form method="post" onsubmit="event.preventDefault(); windowNav()">
                     <div class="form-row">
@@ -49,9 +51,9 @@
                         </div>
                     </div>
                 </form>
-                Otherwise, search for your plan here! Please be mindful of others plans and only modify your own.
             </div>
             <div class="my-4">
+                Otherwise, search for your plan here! Please be mindful of others plans and only modify your own.
                 <div class="form-group">
                     <!-- <label for="search-plan">Search</label> -->
                     <input type="text" onkeyup="searchPlan(event.target.value)"
